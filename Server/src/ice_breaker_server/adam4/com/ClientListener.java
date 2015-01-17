@@ -9,7 +9,7 @@ public class ClientListener implements Runnable
 {
 	
 	private static final int ENDCHECKFREQUENCY = 1000;
-	boolean acceptingNewClients = false;
+	static boolean acceptingNewClients = false;
     ServerSocket serverSocket = null;
 
     ClientListener()
@@ -27,6 +27,7 @@ public class ClientListener implements Runnable
     @Override
     public void run()
     {
+    	acceptingNewClients = true;
         while (acceptingNewClients)
         {
             try
@@ -54,5 +55,10 @@ public class ClientListener implements Runnable
             }
         }
     }
+
+	public static void close()
+	{
+		acceptingNewClients = false;
+	}
 
 }

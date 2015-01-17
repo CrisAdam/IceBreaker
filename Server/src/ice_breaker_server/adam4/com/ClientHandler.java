@@ -3,6 +3,7 @@ package ice_breaker_server.adam4.com;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 
@@ -10,6 +11,7 @@ public class ClientHandler implements Runnable
 {
 
 	private Socket clientSocket;
+
 	public ClientHandler(Socket clientSocket)
 	{
 		this.clientSocket = clientSocket;
@@ -19,16 +21,14 @@ public class ClientHandler implements Runnable
 	@Override
 	public void run()
 	{
-
+		IceBreakerServer.clients.add(this);
 		BufferedReader input = null; // not sure if I need the buffering, but
 										// having the getLine() is nice
 		String message = "";
 
 		try
 		{
-			input = new BufferedReader(new InputStreamReader(
-					clientSocket.getInputStream(),
-					StandardCharsets.UTF_8.newDecoder()));
+			input = new BufferedReader(new InputStreamReader(clientSocket.getInputStream(), StandardCharsets.UTF_8.newDecoder()));
 		}
 		catch (IOException e)
 		{
@@ -77,34 +77,59 @@ public class ClientHandler implements Runnable
 					break;
 				}
 
-
 				default:
 				{
 					System.out.println(message);
 					break;
 				}
 			}
-		}
+		}// end while loop
+		IceBreakerServer.clients.remove(this);
 	}
-
-
 
 	private void connect(String message)
 	{
-		// TODO Auto-generated method stub
+		if (DatabaseRequestHandler.connect(message))
+		{
+			sendMessage("  ");
+		}
+		else
+		{
+			sendMessage("e" + Common.SEPARATOR + "unable to connect");
+		}
 		
 	}
 
 	private void disconnect()
 	{
 		// TODO Auto-generated method stub
-		
+
 	}
-	
+
 	private void join(String message)
 	{
 		// TODO Auto-generated method stub
-		
+
+	}
+
+	private void sendMessage(String message)
+	{
+		if (message.charAt(message.length() - 1) != '\n')
+		{
+			message += '\n';
+		}
+		try
+		{
+			clientSocket.getOutputStream().write((message.getBytes(Common.ENCODING)));
+		}
+		catch (UnsupportedEncodingException e)
+		{
+			e.printStackTrace();
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+		}
 	}
 
 }

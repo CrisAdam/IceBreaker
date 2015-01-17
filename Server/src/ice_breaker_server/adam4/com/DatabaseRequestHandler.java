@@ -6,7 +6,7 @@ import java.sql.SQLException;
 
 public class DatabaseRequestHandler
 {
-    public boolean playerExists(String playerName)
+    public boolean userExists(String userName)
     {
         try
         {
@@ -14,7 +14,7 @@ public class DatabaseRequestHandler
             java.sql.Statement existsQuery;
             existsQuery = con.createStatement();
 
-            ResultSet existsResult = existsQuery.executeQuery("SELECT COUNT(*) from SFASchema.UsersTable where UserName=\"" + playerName + "\";");
+            ResultSet existsResult = existsQuery.executeQuery("SELECT COUNT(*) from icebreaker.user_table where username=\"" + userName + "\";");
             return (existsResult.getInt(1) == 1);
 
         }
@@ -24,4 +24,10 @@ public class DatabaseRequestHandler
             return false;
         }
     }
+
+	public static boolean connect(String message)
+	{
+		return true;
+		
+	}
 }

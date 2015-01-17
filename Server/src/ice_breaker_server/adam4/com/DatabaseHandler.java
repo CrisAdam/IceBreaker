@@ -10,13 +10,12 @@ import java.util.List;
 public class DatabaseHandler
 {
 	private static DatabaseConnectionInfo conInfo;
-	static List<Connection> connections = Collections
-			.synchronizedList(new ArrayList<Connection>());
+	static List<Connection> connections = Collections.synchronizedList(new ArrayList<Connection>());
 	private static int openConnections = 0;
 
-	public DatabaseHandler(DatabaseConnectionInfo con)
+	public DatabaseHandler()
 	{
-		conInfo = con;
+
 	}
 
 	private static Connection createConnection()
@@ -26,8 +25,7 @@ public class DatabaseHandler
 		{
 			try
 			{
-				connections.add(DriverManager.getConnection(conInfo.url,
-						conInfo.user, conInfo.password));
+				connections.add(DriverManager.getConnection(conInfo.url, conInfo.user, conInfo.password));
 				++openConnections;
 			}
 			catch (SQLException e)
@@ -47,7 +45,7 @@ public class DatabaseHandler
 	{
 		if (connections.size() > 0)
 		{
-			return connections.remove(connections.size()-1);
+			return connections.remove(connections.size() - 1);
 		}
 		else
 		{
@@ -56,7 +54,7 @@ public class DatabaseHandler
 			{
 				if (connections.size() > 0)
 				{
-					return connections.remove(connections.size()-1);
+					return connections.remove(connections.size() - 1);
 				}
 				try
 				{
@@ -76,7 +74,7 @@ public class DatabaseHandler
 		connections.add(con);
 	}
 
-	public void close()
+	public static void close()
 	{
 		while (connections.size() > 0)
 		{
@@ -87,7 +85,6 @@ public class DatabaseHandler
 			}
 			catch (SQLException e)
 			{
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -110,7 +107,6 @@ public class DatabaseHandler
 				}
 				catch (SQLException e)
 				{
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
@@ -119,6 +115,12 @@ public class DatabaseHandler
 		{
 			System.out.println("error: unable to close all db connections");
 		}
+	}
+
+	public static void setConnection(DatabaseConnectionInfo databaseConnectionInfo)
+	{
+		conInfo = databaseConnectionInfo;
+
 	}
 
 }
