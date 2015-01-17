@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+// to be run on ec2-54-191-73-91.us-west-2.compute.amazonaws.com
+
 public class IceBreakerServer
 {
 	private static String runFilePath = System.getProperty("user.dir") + FileSystems.getDefault().getSeparator() + "IceBreakerServer.run";
