@@ -71,21 +71,6 @@ public class ClientHandler implements Runnable
 					disconnect();
 					break;
 				}
-				case 'c': // connect
-				{// username|email;password
-					connect(message);
-					break;
-				}
-				case 'g': // guest
-				{// username|email;password
-					connect(message);
-					break;
-				}
-				case 'h': // host
-				{// username|email;password
-					connect(message);
-					break;
-				}
 				case 'i': // invite
 				{ // username|email
 					invite(message);
@@ -153,6 +138,11 @@ public class ClientHandler implements Runnable
 
 	private void sendMessage(String message)
 	{
+		// messages to send
+		// guest
+		// host
+		// ack
+		// nac (|uname|pw|email)
 		if (message.charAt(message.length() - 1) != '\n')
 		{
 			message += '\n';

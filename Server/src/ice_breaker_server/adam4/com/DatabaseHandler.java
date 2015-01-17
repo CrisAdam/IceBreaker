@@ -120,6 +120,7 @@ public class DatabaseHandler
 	public static void setConnection(DatabaseConnectionInfo databaseConnectionInfo)
 	{
 		conInfo = databaseConnectionInfo;
+		connections.add(getConnection());
 
 	}
 
