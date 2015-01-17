@@ -62,18 +62,43 @@ public class ClientHandler implements Runnable
 			switch (switchChar)
 			{
 				case 'c': // connect
-				{
+				{// username|email;password
 					connect(message);
 					break;
 				}
 				case 'd': // disconnect
-				{
+				{ // ;disc
 					disconnect();
 					break;
 				}
+				case 'c': // connect
+				{// username|email;password
+					connect(message);
+					break;
+				}
+				case 'g': // guest
+				{// username|email;password
+					connect(message);
+					break;
+				}
+				case 'h': // host
+				{// username|email;password
+					connect(message);
+					break;
+				}
+				case 'i': // invite
+				{ // username|email
+					invite(message);
+					break;
+				}
 				case 'j': // join (new account)
-				{
+				{ // username;password;email
 					join(message);
+					break;
+				}
+				case 'p': // photo
+				{ // ?????
+					photo(message);
 					break;
 				}
 
@@ -97,7 +122,7 @@ public class ClientHandler implements Runnable
 		{
 			sendMessage("e" + Common.SEPARATOR + "unable to connect");
 		}
-		
+
 	}
 
 	private void disconnect()
@@ -107,6 +132,20 @@ public class ClientHandler implements Runnable
 	}
 
 	private void join(String message)
+	{
+		// TODO Auto-generated method stub
+
+	}
+
+	private void invite(String message)
+	{
+		// search for person
+		// ask person yay/nay
+		// return response
+
+	}
+
+	private void photo(String message)
 	{
 		// TODO Auto-generated method stub
 
