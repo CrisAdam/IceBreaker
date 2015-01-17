@@ -1,7 +1,6 @@
 package ice_breaker_server.adam4.com;
 
 import java.nio.file.FileSystems;
-import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -19,9 +18,9 @@ public class IceBreakerServer
 		handleCLI(args);
 		new Thread(new ClientListener()).start();
 		BlockOnRunFile block = new BlockOnRunFile(runFilePath);
-        block.block();
-        ClientListener.close();
-        DatabaseHandler.close();  // close database after disconnecting clients to enable last-second saves
+		block.block();
+		ClientListener.close();
+		DatabaseHandler.close(); // close database after disconnecting clients to enable last-second saves
 	}
 
 	private static boolean handleCLI(String[] args) throws Exception
@@ -33,8 +32,7 @@ public class IceBreakerServer
 			{
 				case "-db":
 				case "-database":
-					DatabaseHandler.setConnection(new DatabaseConnectionInfo(
-							args[++i].split(";")[0], "", "", 2));
+					DatabaseHandler.setConnection(new DatabaseConnectionInfo(args[++i], 2));
 					break;
 				case "-h":
 				case "-help":
