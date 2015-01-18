@@ -6,7 +6,7 @@ import java.sql.SQLException;
 
 public class DatabaseRequestHandler
 {
-    public boolean userExists(String userName)
+    public static boolean userExists(String userName)
     {
         try
         {
@@ -25,9 +25,20 @@ public class DatabaseRequestHandler
         }
     }
 
-	public static boolean connect(String message)
+	public static boolean connect(String username, String password)
 	{
+		if (userExists(username))
+		{
+			// todo: check that password is valid
+			return true;
+		}
 		return true;
+		
+	}
+
+	public static boolean join(String username, String password)
+	{
+		return !userExists(username);
 		
 	}
 }

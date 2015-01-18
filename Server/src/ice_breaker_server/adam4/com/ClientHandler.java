@@ -11,6 +11,7 @@ public class ClientHandler implements Runnable
 {
 
 	private Socket clientSocket;
+	public String username;
 
 	public ClientHandler(Socket clientSocket)
 	{
@@ -61,37 +62,42 @@ public class ClientHandler implements Runnable
 			char switchChar = message.charAt(0);
 			switch (switchChar)
 			{
-				case 'c': // connect
-				{// username|email;password
-					connect(message);
-					break;
-				}
-				case 'd': // disconnect
-				{ // ;disc
-					disconnect();
-					break;
-				}
-				case 'i': // invite
-				{ // username|email
-					invite(message);
-					break;
-				}
-				case 'j': // join (new account)
-				{ // username;password;email
-					join(message);
-					break;
-				}
-				case 'p': // photo
-				{ // ?????
-					photo(message);
-					break;
-				}
+			case 'a': // answer invite
+			{ 	// username;T|F
+				invite(message);
+				break;
+			}
+			case 'c': // connect
+			{// username;password
+				connect(message);
+				break;
+			}
+			case 'd': // disconnect
+			{ // ;disc
+				disconnect();
+				break;
+			}
+			case 'i': // invite
+			{ // username
+				invite(message);
+				break;
+			}
+			case 'j': // join (new account)
+			{ // username;password
+				join(message);
+				break;
+			}
+			case 'p': // photo
+			{ // ?????
+				photo(message);
+				break;
+			}
 
-				default:
-				{
-					System.out.println(message);
-					break;
-				}
+			default:
+			{
+				System.out.println(message);
+				break;
+			}
 			}
 		}// end while loop
 		IceBreakerServer.clients.remove(this);
@@ -99,9 +105,11 @@ public class ClientHandler implements Runnable
 
 	private void connect(String message)
 	{
-		if (DatabaseRequestHandler.connect(message))
+		String[] params = message.split(Common.SEPARATOR);
+		if (Common.isGoodUserName(params[1]) && DatabaseRequestHandler.connect(params[1], params[2]))
 		{
-			sendMessage("  ");
+			username = params[1];
+			sendMessage("a" + Common.SEPARATOR + "connected successfully");
 		}
 		else
 		{
@@ -112,22 +120,62 @@ public class ClientHandler implements Runnable
 
 	private void disconnect()
 	{
-		// TODO Auto-generated method stub
+		sendMessage("d" + Common.SEPARATOR + "disconnect");
+		try
+		{
+			clientSocket.close();
+		}
+		catch (IOException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 	}
 
 	private void join(String message)
 	{
-		// TODO Auto-generated method stub
+		String[] params = message.split(Common.SEPARATOR);
+		if (DatabaseRequestHandler.join(params[1], params[2]))
+		{
+			sendMessage("j" + Common.SEPARATOR + "joined successfully");
+		}
+		else
+		{
+			sendMessage("e" + Common.SEPARATOR + "unable to join");
+		}
+	}
+
+	private boolean invite(String message)
+	{
+		String[] params = message.split(Common.SEPARATOR);
+		if (params[1].equals(username)) // can't invite self
+		{
+			sendMessage("e" + Common.SEPARATOR + "can't invite self");
+			return false;
+		}
+		
+		for (ClientHandler c : IceBreakerServer.clients)
+		{
+			if (c.username.equals(params[1]))
+			{
+				c.sendInvite(username);
+			}
+		}
+		return true;
+		
+		// send invite will call answerInvite with an answer
 
 	}
 
-	private void invite(String message)
+	public void sendInvite(String username2)
 	{
-		// search for person
-		// ask person yay/nay
-		// return response
-
+		sendMessage("i" + Common.SEPARATOR + username2);
+	}
+	
+	public void answerInvite()
+	{
+		
 	}
 
 	private void photo(String message)
@@ -142,7 +190,8 @@ public class ClientHandler implements Runnable
 		// guest
 		// host
 		// ack
-		// nac (|uname|pw|email)
+		// nac (|uname|pw)
+		// invite
 		if (message.charAt(message.length() - 1) != '\n')
 		{
 			message += '\n';
